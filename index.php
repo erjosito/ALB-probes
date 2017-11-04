@@ -9,20 +9,22 @@
      <br>
      <?php
          $reachabilityTest = True;
+         $hosts = array ("bing.com", "google.com");
          $daemonTest = True;
+         $daemons = array ("httpd", "sshd");
          $localTCPTest = True;
-         $localUDPTest = True;
-         ?>
+         $ports = array ("22", "80");
+         // UDP ports not implemented because it requires root with nmap
+     ?>
      <?php
         // Reachability test
         if ($reachabilityTest === True) {
             print ("<h2>Reachability Test</h2>\n");
-            $hosts = array ("bing.com", "google.com");
             $allReachable = true;
             print ("        <ul>\n");
             foreach ($hosts as $host) {
                 $result = exec ("ping -c 1 -W 1 " . $host . " 2>&1 | grep received");
-                print ("        <li>" . $host . ": " . $result . "</li>\n");
+                print ("            <li>" . $host . ": " . $result . "</li>\n");
                 $pos = strpos ($result, "1 received");
                 if ($pos === false) {
                     $allReachable = false;
@@ -33,11 +35,11 @@
             if ($allReachable === false) {
               // Ping did not work
               http_response_code (299);
-              print ("        At least one target host does not seem to be reachable (" . $host . ")\n");
+              print ("        <p>At least one target host does not seem to be reachable (" . $host . ")</p>\n");
             } else {
               // Ping did work
               http_response_code (200);
-              print ("        All target hosts seem to be reachable\n");
+              print ("        <p>All target hosts seem to be reachable</p>\n");
             }
         }
      ?>
@@ -46,12 +48,11 @@
         // Daemon test
         if ($daemonTest === True) {
             print ("<h2>Daemon Test</h2>\n");
-            $daemons = array ("httpd", "sshd");
             $allRunning = True;
             print ("        <ul>\n");
             foreach ($daemons as $daemon) {
-                $result = exec ("systemctl status " . $daemon . " 2>&1 | grep running");
-                print ("        <li>" . $daemon . ": " . $result . "</li>\n");
+                $result = exec ("systemctl status " . $daemon . " | grep running");
+                print ("            <li>" . $daemon . ": " . $result . "</li>\n");
                 if (!(strlen ($result) > 0)) {
                     $allRunning = False;
                     break;
@@ -61,11 +62,11 @@
             if ($allRunning === False) {
               // Daemon not running
               http_response_code (298);
-              print ("        At least one daemon does not seem to be running (" . $daemon . ")\n");
+              print ("        <p>At least one daemon does not seem to be running (" . $daemon . ")</p>\n");
             } else {
               // All daemons running
               http_response_code (200);
-              print ("        All daemons seem to be running\n");
+              print ("        <p>All daemons seem to be running</p>\n");
             }
         }
      ?>
@@ -77,12 +78,11 @@
             // Check nmap is installed
             $nmapPath = exec ("which nmap 2>/dev/null");
             if ( strlen ($nmapPath) > 0 ) { 
-                $ports = array ("22", "80");
                 $allOpen = True;
                 print ("        <ul>\n");
                 foreach ($ports as $port) {
                     $result = exec ($nmapPath . " localhost -p " . $port . " | grep tcp");
-                    print ("        <li>" . $result . "</li>\n");
+                    print ("            <li>" . $result . "</li>\n");
                     $pos = strpos ($result, "open");
                     if ($pos === False) {
                         $allOpen = False;
@@ -93,14 +93,14 @@
                 if ($allOpen === False) {
                     // Daemon not running
                     http_response_code (298);
-                    print ("        At least one TCP port does not seem to be open (" . $port . ")\n");
+                    print ("        <p>At least one TCP port does not seem to be open (" . $port . ")</p>\n");
                 } else {
                     // All daemons running
                     http_response_code (200);
-                    print ("        All TCP ports seem to be open\n");
+                    print ("        <p>All TCP ports seem to be open</p>\n");
                 }
             } else {
-              print ("nmap not found in the system, nmap is required to test open ports\n");
+              print ("<p>nmap not found in the system, nmap is required to test open ports</p>\n");
             }
         }
      ?>
