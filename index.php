@@ -19,14 +19,17 @@
             print ("<h2>Reachability Test</h2>\n");
             $hosts = array ("bing.com", "google.com");
             $allReachable = true;
+            print ("        <ul>\n");
             foreach ($hosts as $host) {
-              $result = exec ("ping -c 1 -W 1 " . $host . " 2>&1 | grep received");
-              $pos = strpos ($result, "1 received");
-              if ($pos === false) {
-                $allReachable = false;
-                break;
-              }
+                $result = exec ("ping -c 1 -W 1 " . $host . " 2>&1 | grep received");
+                print ("        <li>" . $result . "</li>\n");
+                $pos = strpos ($result, "1 received");
+                if ($pos === false) {
+                    $allReachable = false;
+                    break;
+                }
             }
+            print ("        </ul>\n");
             if ($allReachable === false) {
               // Ping did not work
               http_response_code (299);
@@ -45,14 +48,17 @@
             print ("<h2>Daemon Test</h2>\n");
             $daemons = array ("httpd", "sshd");
             $allRunning = true;
+            print ("        <ul>\n");
             foreach ($daemons as $daemon) {
-              $result = exec ("systemctl status " . $daemon . " 2>&1 | grep 'active (running)'");
-              $pos = strpos ($result, "running");
-              if ($pos === false) {
-                $allRunning = false;
-                break;
-              }
+                $result = exec ("systemctl status " . $daemon . " 2>&1 | grep 'active (running)'");
+                print ("        <li>" . $daemon . ": " . $result . "</li>\n");
+                $pos = strpos ($result, "running");
+                if ($pos === false) {
+                    $allRunning = false;
+                    break;
+                }
             }
+            print ("        </ul>\n");
             if ($allRunning === false) {
               // Daemon not running
               http_response_code (298);
