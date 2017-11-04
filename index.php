@@ -93,7 +93,7 @@
                   print ("All TCP ports seem to be open\n");
                 }
               } else {
-                  print ("nmap not found in the system, nmap is required to test open ports\n")
+                  print ("nmap not found in the system, nmap is required to test open ports\n");
               }
         }
      ?>
