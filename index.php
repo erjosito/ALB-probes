@@ -50,10 +50,9 @@
             $allRunning = true;
             print ("        <ul>\n");
             foreach ($daemons as $daemon) {
-                $result = exec ("systemctl status " . $daemon . " 2>&1 | grep 'active (running)'");
+                $result = exec ("systemctl status " . $daemon . " 2>&1 | grep running");
                 print ("        <li>" . $daemon . ": " . $result . "</li>\n");
-                $pos = strpos ($result, "running");
-                if ($pos === false) {
+                if (!(strlen ($result) > 0)) {
                     $allRunning = false;
                     break;
                 }
