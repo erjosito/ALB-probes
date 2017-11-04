@@ -45,7 +45,7 @@
             print ("<h2>Daemon Test</h2>\n");
             $daemons = array ("httpd", "sshd");
             $allRunning = true;
-            foreach ($daemon as $daemons) {
+            foreach ($daemons as $daemon) {
               $result = exec ("systemctl status " . $daemon . " 2>&1 | grep 'active (running)'");
               $pos = strpos ($result, "running");
               if ($pos === false) {
@@ -74,18 +74,18 @@
             if ( strlen ($nmapPath) > 0 ) { 
                 $ports = array ("22", "80");
                 $allOpen = true;
-                print ("        <ul>");
-                foreach ($port as $ports) {
+                print ("        <ul>\n");
+                foreach ($ports as $port) {
                     $result = exec ($nmapPath . " localhost -p " . $port . " | grep tcp");
                     print ("        <li>" . $result . "</li>\n");
                     $pos = strpos ($result, "open");
                     if ($pos === False) {
-                        $allOpen = false;
+                        $allOpen = False;
                         break;
                     }
                   }
-                print ("        </ul>");
-                if ($allOpen === false) {
+                print ("        </ul>\n");
+                if ($allOpen === False) {
                     // Daemon not running
                     http_response_code (298);
                     print ("        At least one TCP port does not seem to be open (" . $port . ")\n");
