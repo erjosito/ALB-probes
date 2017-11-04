@@ -72,7 +72,9 @@
             // Check nmap is installed
             $nmapPath = exec ("which nmap 2>/dev/null");
             $pos = strpos ($nmapPath, "nmap");
-            if ($pos === True) { 
+            if ($pos === False) { 
+                print ("nmap not found in the system, nmap is required to test open ports\n");
+            } else {
                 $ports = array ("22", "80");
                 $allOpen = true;
                 foreach ($port as $ports) {
@@ -92,8 +94,6 @@
                   http_response_code (200);
                   print ("All TCP ports seem to be open\n");
                 }
-              } else {
-                  print ("nmap not found in the system, nmap is required to test open ports\n");
               }
         }
      ?>
