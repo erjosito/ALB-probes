@@ -10,7 +10,9 @@
      <?php
          $reachabilityTest = True;
          $daemonTest = True;
-     ?>
+         $localTCPTest = True;
+         $localUDPTest = True;
+         ?>
      <?php
         // Reachability test
         if ($reachabilityTest === True) {
@@ -62,6 +64,40 @@
             }
         }
      ?>
+
+     <?php
+        // Local TCP Port Test
+        if ($localTCPTest === True) {
+            print ("<h2>Local TCP Port Test - nmap needs to be installed</h2>\n");
+            // Check nmap is installed
+            $nmapPath = exec ("which nmap 2>/dev/null");
+            $pos = strpos ($nmapPath, "nmap");
+            if ($pos === True) { 
+                $ports = array ("22", "80");
+                $allOpen = true;
+                foreach ($port as $ports) {
+                  $result = exec ($nmapPath . " localhost -p " . $port . " | grep tcp");
+                  $pos = strpos ($result, "open");
+                  if ($pos === False) {
+                    $allOpen = false;
+                    break;
+                  }
+                }
+                if ($allOpen === false) {
+                  // Daemon not running
+                  http_response_code (298);
+                  print ("At least one TCP port does not seem to be open (" . $port . ")\n");
+                } else {
+                  // All daemons running
+                  http_response_code (200);
+                  print ("All TCP ports seem to be open\n");
+                }
+              } else {
+                  print ("nmap not found in the system, nmap is required to test open ports\n")
+              }
+        }
+     ?>
+
 
    </body>
 </html>
