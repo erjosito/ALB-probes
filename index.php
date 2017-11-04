@@ -8,13 +8,13 @@
      </h1>
      <br>
      <?php
-         $reachabilityTest = False;
+         $reachabilityTest = True;
          $daemonTest = True;
      ?>
      <?php
         // Reachability test
-        if ($reachabilityTest) {
-            print ("<h2>Reachability Test</h2>");
+        if ($reachabilityTest === True) {
+            print ("<h2>Reachability Test</h2>\n");
             $hosts = array ("bing.com", "google.com");
             $allReachable = true;
             foreach ($hosts as $host) {
@@ -39,8 +39,8 @@
 
      <?php
         // Daemon test
-        if ($daemonTest) {
-            print ("<h2>Daemon Test</h2>");
+        if ($daemonTest === True) {
+            print ("<h2>Daemon Test</h2>\n");
             $daemons = array ("httpd", "sshd");
             $allRunning = true;
             foreach ($daemon as $daemons) {
