@@ -22,7 +22,7 @@
             print ("        <ul>\n");
             foreach ($hosts as $host) {
                 $result = exec ("ping -c 1 -W 1 " . $host . " 2>&1 | grep received");
-                print ("        <li>" . $result . "</li>\n");
+                print ("        <li>" . $host . ": " . $result . "</li>\n");
                 $pos = strpos ($result, "1 received");
                 if ($pos === false) {
                     $allReachable = false;
@@ -47,18 +47,18 @@
         if ($daemonTest === True) {
             print ("<h2>Daemon Test</h2>\n");
             $daemons = array ("httpd", "sshd");
-            $allRunning = true;
+            $allRunning = True;
             print ("        <ul>\n");
             foreach ($daemons as $daemon) {
                 $result = exec ("systemctl status " . $daemon . " 2>&1 | grep running");
                 print ("        <li>" . $daemon . ": " . $result . "</li>\n");
                 if (!(strlen ($result) > 0)) {
-                    $allRunning = false;
+                    $allRunning = False;
                     break;
                 }
             }
             print ("        </ul>\n");
-            if ($allRunning === false) {
+            if ($allRunning === False) {
               // Daemon not running
               http_response_code (298);
               print ("        At least one daemon does not seem to be running (" . $daemon . ")\n");
@@ -78,7 +78,7 @@
             $nmapPath = exec ("which nmap 2>/dev/null");
             if ( strlen ($nmapPath) > 0 ) { 
                 $ports = array ("22", "80");
-                $allOpen = true;
+                $allOpen = True;
                 print ("        <ul>\n");
                 foreach ($ports as $port) {
                     $result = exec ($nmapPath . " localhost -p " . $port . " | grep tcp");
