@@ -104,7 +104,7 @@
         if ( (!($reachabilityTest) || $allReachable) && (!($daemonTest) || $allRunning) && ( !($localTCPTest) || $allOpen) ) {
             http_response_code (200);
         } else {
-            http_response_code (299);
+            http_response_code (409);
         }
      ?>
 
