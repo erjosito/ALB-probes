@@ -34,11 +34,9 @@
             print ("        </ul>\n");
             if ($allReachable === false) {
               // Ping did not work
-              http_response_code (299);
               print ("        <p>At least one target host does not seem to be reachable (" . $host . ")</p>\n");
             } else {
               // Ping did work
-              http_response_code (200);
               print ("        <p>All target hosts seem to be reachable</p>\n");
             }
         }
@@ -61,11 +59,9 @@
             print ("        </ul>\n");
             if ($allRunning === False) {
               // Daemon not running
-              http_response_code (298);
               print ("        <p>At least one daemon does not seem to be running (" . $daemon . ")</p>\n");
             } else {
               // All daemons running
-              http_response_code (200);
               print ("        <p>All daemons seem to be running</p>\n");
             }
         }
@@ -77,8 +73,8 @@
             print ("<h2>Local TCP Port Test - nmap needs to be installed</h2>\n");
             // Check nmap is installed
             $nmapPath = exec ("which nmap 2>/dev/null");
+            $allOpen = True;
             if ( strlen ($nmapPath) > 0 ) { 
-                $allOpen = True;
                 print ("        <ul>\n");
                 foreach ($ports as $port) {
                     $result = exec ($nmapPath . " localhost -p " . $port . " | grep tcp");
@@ -92,11 +88,9 @@
                 print ("        </ul>\n");
                 if ($allOpen === False) {
                     // Daemon not running
-                    http_response_code (298);
                     print ("        <p>At least one TCP port does not seem to be open (" . $port . ")</p>\n");
                 } else {
                     // All daemons running
-                    http_response_code (200);
                     print ("        <p>All TCP ports seem to be open</p>\n");
                 }
             } else {
@@ -105,6 +99,14 @@
         }
      ?>
 
+     <?php
+        // Return code evaluation
+        if ( (!($reachabilityTest) || $allReachable) && (!($daemonTest) || $allRunning) && ( !($localTCPTest) || $allOpen) ) {
+            http_response_code (200);
+        } else {
+            http_response_code (299);
+        }
+     ?>
 
    </body>
 </html>
